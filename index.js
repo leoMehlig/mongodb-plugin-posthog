@@ -5,26 +5,6 @@ var groupBy = function(xs, key) {
     }, {});
 };
 
-async function setupPlugin({ global, attachments, config }) {
-    if (!config.databaseUrl) {
-        throw new Error('Database Url not provided!')
-    }
-    if (!config.databaseName) {
-        throw new Error('Database Name not provided!')
-    }
-
-    // const client = mongoose.connect('config.databaseUrl', {useNewUrlParser: true, useUnifiedTopology: true});
-    const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
-        .catch(err => { console.log(err); });
-
-    if (!client) {
-        throw new Error('Failed to setup client')
-    }
-
-    global.database = client.db(config.databaseName);
-    // golbal.database = client.connected
-}
-
 async function processEventBatch(batch, { config, global }) {
     if (!global.database) {
         throw new Error('No database initialized!')
