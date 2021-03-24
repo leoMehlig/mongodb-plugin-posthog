@@ -2,7 +2,7 @@
   "name": "mongodb-plugin-posthog",
   "version": "0.0.1",
   "description": "Sends events to a MongoDB database on ingestion.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "rollup -c"
   },
