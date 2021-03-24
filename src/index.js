@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient;
+import { MongoClient } from 'mongodb';
 
 var groupBy = function(xs, key) {
     return xs.reduce(function(rv, x) {
