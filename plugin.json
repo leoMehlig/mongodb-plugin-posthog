@@ -4,6 +4,12 @@
     "description": "Sends events to a MongoDB database on ingestion.",
     "main": "index.js",
     "config": [
-
+        {
+            "key": "url",
+            "hint": "URL of mongodb proxy server",
+            "name": "Proxy URL",
+            "type": "string",
+            "required": true
+          }
     ]
 }

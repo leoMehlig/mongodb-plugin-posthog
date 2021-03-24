@@ -9,7 +9,7 @@ async function processEventBatch(batch, { config, global }) {
     const rows = batch.map((oneEvent) => {
         const { event, properties, $set, $set_once, distinct_id, team_id, site_url, now, sent_at, uuid, ..._discard } = oneEvent
         const ip = properties?.['$ip'] || oneEvent.ip
-        const timestamp = oneEvent.timestamp || oneEvent.data?.timestamp || properties?.timestamp || now || sent_at
+        const timestamp = oneEvent?.timestamp || oneEvent?.data?.timestamp || properties?.timestamp || now || sent_at
         let ingestedProperties = properties
         let elements = []
 
@@ -31,15 +31,15 @@ async function processEventBatch(batch, { config, global }) {
             team_id,
             ip,
             site_url,
-            timestamp: timestamp ? global.bigQueryClient.timestamp(timestamp) : null,
+            timestamp: timestamp,
         }
     })
 
 
-    var events = groupBy(ros, "event")
+    var events = groupBy(rows, "event")
 
     const response = await fetchWithRetry(
-        `http://127.0.0.1:8081`,
+        config.url,
         {
             headers: {
                 'Content-Type': 'application/json',
