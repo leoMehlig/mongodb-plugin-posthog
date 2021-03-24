@@ -6,10 +6,6 @@ var groupBy = function(xs, key) {
 };
 
 async function processEventBatch(batch, { config, global }) {
-    if (!global.database) {
-        throw new Error('No database initialized!')
-    }
-
     const rows = batch.map((oneEvent) => {
         const { event, properties, $set, $set_once, distinct_id, team_id, site_url, now, sent_at, uuid, ..._discard } = oneEvent
         const ip = properties?.['$ip'] || oneEvent.ip
