@@ -1,4 +1,4 @@
-import mongodb from 'mongodb';
+import { default as mongodb } from 'mongodb';
 
 var groupBy = function(xs, key) {
     return xs.reduce(function(rv, x) {
@@ -7,7 +7,7 @@ var groupBy = function(xs, key) {
     }, {});
 };
 
-export async function setupPlugin({ global, attachments, config }) {
+async function setupPlugin({ global, attachments, config }) {
     if (!config.databaseUrl) {
         throw new Error('Database Url not provided!')
     }
@@ -25,7 +25,7 @@ export async function setupPlugin({ global, attachments, config }) {
     global.database = client.db(config.databaseName);
 }
 
-export async function processEventBatch(batch, { config, global }) {
+async function processEventBatch(batch, { config, global }) {
     if (!global.database) {
         throw new Error('No database initialized!')
     }
@@ -73,3 +73,6 @@ export async function processEventBatch(batch, { config, global }) {
 
     return batch
 }
+
+module.exports.setupPlugin = setupPlugin;
+module.exports.processEventBatch = processEventBatch;
