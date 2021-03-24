@@ -40,6 +40,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from "@rollup/plugin-json";
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -47,13 +48,17 @@ const production = !process.env.ROLLUP_WATCH;
 
 export default {
 	input: 'src/index.js',
+    // external: ['mongodb'],
 	output: {
 		file: 'public/bundle.js',
-		format: 'cjs', // immediately-invoked function expression — suitable for <script> tags
+		format: 'umd', // immediately-invoked function expression — suitable for <script> tags
 		// sourcemap: true
 	},
 	plugins: [
-		resolve(), // tells Rollup how to find date-fns in node_modules
+        nodePolyfills(),
+		resolve({
+            // mainFields: ['module', 'main']
+        }), // tells Rollup how to find date-fns in node_modules
 		commonjs(), // converts date-fns to ES modules
         json() // minify, but only in production
 	]
