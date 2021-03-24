@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import mongodb from 'mongodb';
 
 var groupBy = function(xs, key) {
     return xs.reduce(function(rv, x) {
@@ -7,7 +7,7 @@ var groupBy = function(xs, key) {
     }, {});
 };
 
-async function setupPlugin({ global, attachments, config }) {
+export async function setupPlugin({ global, attachments, config }) {
     if (!config.databaseUrl) {
         throw new Error('Database Url not provided!')
     }
@@ -15,7 +15,7 @@ async function setupPlugin({ global, attachments, config }) {
         throw new Error('Database Name not provided!')
     }
 
-    const client = await MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
+    const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
         .catch(err => { console.log(err); });
 
     if (!client) {
@@ -25,7 +25,7 @@ async function setupPlugin({ global, attachments, config }) {
     global.database = client.db(config.databaseName);
 }
 
-async function processEventBatch(batch, { config, global }) {
+export async function processEventBatch(batch, { config, global }) {
     if (!global.database) {
         throw new Error('No database initialized!')
     }
@@ -73,6 +73,3 @@ async function processEventBatch(batch, { config, global }) {
 
     return batch
 }
-
-module.exports.setupPlugin = setupPlugin;
-module.exports.processEventBatch = processEventBatch;
