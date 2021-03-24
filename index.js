@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 var groupBy = function(xs, key) {
     return xs.reduce(function(rv, x) {
       (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -15,16 +13,16 @@ async function setupPlugin({ global, attachments, config }) {
         throw new Error('Database Name not provided!')
     }
 
-    const client = mongoose.connect('config.databaseUrl', {useNewUrlParser: true, useUnifiedTopology: true});
-    // const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
-    //     .catch(err => { console.log(err); });
+    // const client = mongoose.connect('config.databaseUrl', {useNewUrlParser: true, useUnifiedTopology: true});
+    const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
+        .catch(err => { console.log(err); });
 
     if (!client) {
         throw new Error('Failed to setup client')
     }
 
-    // global.database = client.db(config.databaseName);
-    golbal.database = client.connected
+    global.database = client.db(config.databaseName);
+    // golbal.database = client.connected
 }
 
 async function processEventBatch(batch, { config, global }) {
@@ -64,17 +62,37 @@ async function processEventBatch(batch, { config, global }) {
 
     var events = groupBy(ros, "event")
 
-    try {
-        for (var event in events) {
-            // var col = global.database.collection(event)
-            // await col.insertMany(events[event], { ordered: false })
-        }
-    } catch (error) {
-        throw new Error(`Error inserting into mongodb! ${JSON.stringify(error.errors)}`)
-    }
+    const response = await fetchWithRetry(
+        `http://127.0.0.1:8081`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(events),
+        },
+        'POST'
+    )
 
+    if (!statusOk(response)) {
+        console.log(`Unable to send events to mongodb`)
+    }
     return batch
 }
 
-module.exports.setupPlugin = setupPlugin;
-module.exports.processEventBatch = processEventBatch;
+
+async function fetchWithRetry(url, options = {}, method = 'GET', isRetry = false) {
+    try {
+        const res = await fetch(url, { method: method, ...options })
+        return res
+    } catch {
+        if (isRetry) {
+            throw new Error(`${method} request to ${url} failed.`)
+        }
+        const res = await fetchWithRetry(url, options, (method = method), (isRetry = true))
+        return res
+    }
+}
+
+function statusOk(res) {
+    return String(res.status)[0] === '2'
+}
