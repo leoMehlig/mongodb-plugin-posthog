@@ -1,7 +1,7 @@
 'use strict';
 
-var aws4$1 = require('aws4');
-var mongodbClientEncryption = require('mongodb-client-encryption');
+// var aws4$1 = require('aws4');
+// var mongodbClientEncryption = require('mongodb-client-encryption');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

@@ -1,4 +1,4 @@
-import { default as mongodb } from 'mongodb';
+const mongoose = require('mongoose');
 
 var groupBy = function(xs, key) {
     return xs.reduce(function(rv, x) {
@@ -15,14 +15,16 @@ async function setupPlugin({ global, attachments, config }) {
         throw new Error('Database Name not provided!')
     }
 
-    const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
-        .catch(err => { console.log(err); });
+    const client = mongoose.connect('config.databaseUrl', {useNewUrlParser: true, useUnifiedTopology: true});
+    // const client = await mongodb.MongoClient.connect(config.databaseUrl, { useNewUrlParser: true })
+    //     .catch(err => { console.log(err); });
 
     if (!client) {
         throw new Error('Failed to setup client')
     }
 
-    global.database = client.db(config.databaseName);
+    // global.database = client.db(config.databaseName);
+    golbal.database = client.connected
 }
 
 async function processEventBatch(batch, { config, global }) {
@@ -64,8 +66,8 @@ async function processEventBatch(batch, { config, global }) {
 
     try {
         for (var event in events) {
-            var col = global.database.collection(event)
-            await col.insertMany(events[event], { ordered: false })
+            // var col = global.database.collection(event)
+            // await col.insertMany(events[event], { ordered: false })
         }
     } catch (error) {
         throw new Error(`Error inserting into mongodb! ${JSON.stringify(error.errors)}`)
