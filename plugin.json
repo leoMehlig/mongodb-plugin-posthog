@@ -2,7 +2,7 @@
     "name": "MongoDB Export",
     "url": "https://github.com/leoMehlig/mongodb-plugin-posthog",
     "description": "Sends events to a MongoDB database on ingestion.",
-    "main": "index.js",
+    "main": "publoc/bundle.js",
     "config": [
         {
             "key": "databaseUrl",
