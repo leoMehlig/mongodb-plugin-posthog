@@ -1,0 +1,22 @@
+{
+  "name": "mongodb-plugin-posthog",
+  "version": "0.0.1",
+  "description": "Sends events to a MongoDB database on ingestion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leoMehlig/mongodb-plugin-posthog.git"
+  },
+  "author": "Leo Mehlig",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leoMehlig/mongodb-plugin-posthog/issues"
+  },
+  "homepage": "https://github.com/leoMehlig/mongodb-plugin-posthog#readme",
+  "dependencies": {
+    "mongodb": "^3.6.5"
+  }
+}
